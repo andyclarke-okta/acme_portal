@@ -1,0 +1,159 @@
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>GetTokenSdk</title>
+</head>
+<body>
+    <script src="~/js/okta-auth-js.min.js" type="text/javascript"></script>
+
+    <div id="okta-login-container"></div>
+
+
+    <script type="text/javascript">
+    function sleep(milliseconds) {
+      const date = Date.now();
+      let currentDate = null;
+      do {
+        currentDate = Date.now();
+      } while (currentDate - date < milliseconds);
+    }
+
+    var myOktaOrg = '@Configuration["OktaWeb:OktaDomain"]';
+    var clientId = '@Configuration["OktaWeb:ClientId"]';
+    var myIssuer = '@Configuration["OktaWeb:Issuer"]';
+    //var redirectUri = '@Configuration["OktaWeb:RedirectUri"]';
+    var redirectUri = "@TempData["redirectUri"]";
+    //var redirectUri = window.location.origin + '/authorization-code/callback';
+    var myHrefLocation = "none";
+
+
+    var config = {
+        url: myOktaOrg,
+        issuer: myIssuer,
+        tokenManager: {
+            //local storage is default
+            storage: 'sessionStorage',
+            //storage: 'localStorage',
+            //storage: 'cookie',
+            //secure: true,
+            //sameSite: 'none',
+            expireEarlySeconds: 120,
+            //auto renew defaults to true
+            autoRenew: false
+        },
+        clientId: clientId,
+        //redirectUri: redirectUri,
+        responseMode: 'query',
+        pkce: true,
+
+          // Handle session expiration / token renew failure
+          onSessionExpired: function() {
+            console.log('re-authorization is required');
+            //authClient.getWithRedirect();
+          }
+
+    };
+
+    var authClient = new OktaAuth(config);
+
+     function silentGetToken() {
+            //get accessToken without prompt
+            authClient.token.getWithoutPrompt({
+                responseType: ['id_token','token'], // or array of types
+                state: "getTokenSdk"
+            })
+            .then(function (res) {
+                var key = "accessToken";;
+                console.log('getToken without prompt success')
+                console.log('accessToken 1;   ' + res.tokens.accessToken.accessToken);
+                authClient.tokenManager.add(key, res.tokens.accessToken);
+                debugger;
+                authClient.tokenManager.get(key)
+                .then(function(token) {
+                  if (token) {
+                    // Token is valid
+                      debugger;
+                    console.log("accessToken 2; " + token.accessToken);
+                  } else {
+                      debugger;
+                      console.log("Token has expired; ");
+                  }
+                })
+                .catch(function(err) {
+                  // OAuth Error
+                  console.error('handle OAuthError ' + err);
+                });
+            })
+            .catch(function (err) {
+                console.log('getToken without prompt failure 2');
+                debugger;
+                // handle OAuthError
+            });
+        }
+
+
+            function silentRenewToken() {
+                sleep(2000);
+                //check stored tokens
+                var key = "accessToken";
+                authClient.tokenManager.get(key)
+                .then(function(token) {
+                  if (token) {
+                    console.log("Token is valid accessToken; " + token.accessToken);
+                  } else
+                  {
+                      //this can only be hit if auto renew is set to false
+                        console.log("Token has expired; ");
+                       debugger;
+                        authClient.token.renew(token)
+                        .then(function(freshToken) {
+                            console.log('manage freshToken' + freshToken);
+                            debugger;
+                        })
+                        .catch(function(err) {
+                            console.log('handle OAuthError ' + err);
+                        });
+                  }
+                })
+                .catch(function(err) {
+                  console.error("OAuth Error " + err);
+                });
+            }
+
+            function silentManageToken() {
+                sleep(2000);
+                //check stored tokens
+                var key = "accessToken";
+                authClient.tokenManager.renew(key)
+                .then(function(token) {
+                  if (token) {
+                      debugger;
+                    console.log("Renewed accessToken; " + token.accessToken);
+                  }
+                })
+                .catch(function(err) {
+                  console.error("Oauth error " + err);
+                });
+            }
+
+            debugger;
+            silentGetToken();
+            //silentRenewToken();
+            //silentManageToken();
+
+
+
+
+    </script>
+
+
+</body>
+</html>

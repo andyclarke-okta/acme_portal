@@ -1,0 +1,288 @@
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+
+@{
+    ViewData["Title"] = "WidgetLogin";
+}
+
+<script src="https://global.oktacdn.com/okta-signin-widget/@Configuration["OktaNative:WidgetVersion"]/js/okta-sign-in.min.js" type="text/javascript"></script>
+<link href="https://global.oktacdn.com/okta-signin-widget/@Configuration["OktaNative:WidgetVersion"]/css/okta-sign-in.min.css" type="text/css" rel="stylesheet" />
+
+<div class="login-bg-image" style="background-image: url('/img/Brooklyn-Bridge-East-River-New-York-City.jpg')"></div>
+<div id="okta-login-container"  ></div>
+
+<form method="POST" asp-action="WidgetLanding">
+    <input type="hidden" name="accessToken" id="hiddenAccessTokenField" />
+    @Html.AntiForgeryToken()
+</form>
+
+
+
+<script type="text/javascript">
+    function sleep(milliseconds) {
+      const date = Date.now();
+      let currentDate = null;
+      do {
+        currentDate = Date.now();
+      } while (currentDate - date < milliseconds);
+    }
+
+    var myOktaOrg = '@Configuration["OktaNative:OktaDomain"]';
+    var clientId = '@Configuration["OktaNative:ClientId"]';
+    var myIssuer = '@Configuration["OktaNative:Issuer"]';
+    //var redirectUri = '@Configuration["OktaNative:RedirectUri"]';
+    var redirectUri = "@TempData["redirectUri"]";
+    //var redirectUri = window.location.origin + '/authorization-code/callback';
+    var myHrefLocation = "none";
+
+    var myLocation = "none";
+    var landing = "/Home/Login";
+
+
+            // Handle GET / Querystring Params...
+        function getParameterByName(name, url) {
+            // Set default for url
+            if (!url) url = window.location.href;
+            name = name.replace(/[\[\]]/g, "\\$&");
+            var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                results = regex.exec(url);
+            // If not found
+            if (!results) return null;
+            // If no value found
+            if (!results[2]) return '';
+            // Result found... just decode 1st.
+            console.log('name', results[2]);
+            var parameter_decoded = decodeURIComponent(results[2]);
+            console.log('parameter_decoded', parameter_decoded);
+            return decodeURIComponent(parameter_decoded);
+        }
+
+        (function () {
+            var url = window.location.href;
+            var arr = url.split("/");
+            var result = arr[0] + "//" + arr[2];
+            myLocation = result;
+        })();
+
+
+        // Handle the logic to prioritize the URL for redirect.
+        function getOpt(o1, o2, o3) {
+            // Set defaults for inbound
+            if (o1 != null) return o1;
+            if (o2 != null) return o2;
+            if (o3 != null) return o3;
+            return window.location.href;
+        }
+
+        //  Handle Return URLs
+        //debugger;
+        var relayState = getParameterByName('relaystate');
+        if (relayState != null)
+            console.log('relayState', relayState);
+
+        var fromURI = getParameterByName('fromURI');
+        if (fromURI != null)
+            console.log('fromURI', fromURI);
+
+        var MyInfo = getParameterByName('MyInfo');
+        if (MyInfo != null)
+            console.log('MyInfo', MyInfo);
+
+        function getOpt() {
+            //set hierarchy for choosing landing url
+            var nextUrl = myLocation + landing;
+            //var nextUrl = myOktaOrg;
+            if (MyInfo != null) {
+                nextUrl = MyInfo;
+            }
+            if (relayState != null) {
+                nextUrl = relayState;
+            }
+            if (fromURI != null) {
+                nextUrl = fromURI;
+            }
+            return nextUrl;
+        }
+
+            //bootstrap Okta widget
+        var options = {
+            baseUrl: myOktaOrg,
+            //logo: "/img/logo_acme.png",
+            features: {
+                registration: true,
+                router: true,
+                rememberMe: false,
+                smsRecovery: true,
+                callRecovery: true,
+                windowsVerify: true,
+                selfServiceUnlock: false,
+                hideSignOutLinkInMFA: true,
+                showPasswordToggleOnSignInPage: false,
+                idpDiscovery: false,
+                multiOptionalFactorEnroll: false
+            },
+            registration: {
+                parseSchema: function (schema, onSuccess, onFailure) {
+                    // handle parseSchema callback
+                    // This will add an additional field to the registration form
+                    //schema.profileSchema.properties.address = {
+                    //    'type': 'string',
+                    //    'description': 'Street Address',
+                    //    'default': 'Enter your street address',
+                    //    'maxLength': 255
+                    //};
+                    //schema.profileSchema.fieldOrder.push('city');
+                    onSuccess(schema);
+                },
+                preSubmit: function (postData, onSuccess, onFailure) {
+                    // handle preSubmit callback
+                    console.log(postData);
+                    onSuccess(postData);
+                },
+                postSubmit: function (response, onSuccess, onFailure) {
+                    // handle postsubmit callback
+                    console.log(response);
+                    onSuccess(response);
+                }
+            },
+            i18n: {
+                    // Overriding English properties
+                    'en': {
+                        'primaryauth.title': 'Sign in to your account',
+                    'primaryauth.username.placeholder': 'Email Address',
+                    'primaryauth.username.tooltip': 'Email1 Address',
+                      'registration.signup.text': 'Create'
+                    }
+            },
+            helpLinks: {
+                custom: [
+                    {
+                        text: "What is the New IntelliRisk?",
+                        href: "/Home/Help"
+                    }
+                ]
+            }
+        };
+
+ 
+        var oktaSignIn = new OktaSignIn(options);
+
+        function widgetSuccessCallback(res) {
+                           console.log('User Status ', res.status);
+                           console.log('UserId ', res.user.id);
+
+                           if (res.status === 'SUCCESS') {
+                               //console.log('User %s successfully authenticated %o', res.user.profile.login, res.user);
+
+                               nextURI = getOpt();
+                               debugger;
+                               // Set Session
+                               res.session.setCookieAndRedirect(nextURI);
+                               //res.session.setCookieAndRedirect(redirectUri);
+                           }
+           };
+
+           function widgetErrorCallback(err) {
+               // handleErrors(err);
+               console.log("failed to login: %o", err);
+                  debugger;
+            }
+
+
+            function showLoginWidget() {
+                oktaSignIn.renderEl({el: '#okta-login-container'}, widgetSuccessCallback, widgetErrorCallback);
+            };
+
+
+        //function silentGetToken() {
+        //    //get accessToken without prompt
+        //    oktaSignIn.authClient.token.getWithoutPrompt({
+        //        responseType: ['id_token','token'], // or array of types
+        //        state: "getTokenWidget"
+        //    })
+        //    .then(function (res) {
+        //        var key = "accessToken";
+        //        console.log('getToken without prompt success');
+        //        console.log('accessToken 1' + res[1].accessToken);
+        //        //localStorage.token = res[1].accessToken;
+        //        //localStorage.idToken = res[0].idToken;
+        //        oktaSignIn.authClient.tokenManager.add(key, res[1]);
+        //        debugger;
+        //        oktaSignIn.authClient.tokenManager.get(key)
+        //        .then(function(token) {
+        //          if (token) {
+        //            // Token is valid
+        //              debugger;
+        //            console.log("accessToken 2; " + token.accessToken);
+        //          } else {
+        //              debugger;
+        //              console.log("Token has expired; ");
+        //          }
+        //        })
+        //        .catch(function(err) {
+        //          // OAuth Error
+        //          console.error('handle OAuthError ' + err);
+        //        });
+        //    })
+        //    .catch(function (err) {
+        //        console.log('getToken without prompt failure 2');
+        //        debugger;
+        //        // handle OAuthError
+        //    });
+        //}
+
+
+            //function silentRenewToken() {
+            //    sleep(2000);
+            //    //check stored tokens
+            //    var key = "accessToken";
+            //    oktaSignIn.authClient.tokenManager.get(key)
+            //    .then(function(token) {
+            //      if (token) {
+            //        console.log("Token is valid, accessToken; " + token.accessToken);
+            //      } else
+            //      {
+            //          //in this context this will never be hit
+            //          // auto renew of expired token when get is set to true in widget
+            //            console.log("Token has expired; ");
+            //           debugger;
+            //            oktaSignIn.authClient.token.renew(token)
+            //            .then(function(freshToken) {
+            //                console.log('manage freshToken' + freshToken);
+            //                debugger;
+            //            })
+            //            .catch(function(err) {
+            //                console.log('handle OAuthError ' + err);
+            //            });
+            //      }
+            //    })
+            //    .catch(function(err) {
+            //      console.error("OAuth Error " + err);
+            //    });
+            //}
+
+            //function silentManageToken() {
+            //    sleep(2000);
+            //    //check stored tokens
+            //    var key = "accessToken";
+            //    oktaSignIn.authClient.tokenManager.renew(key)
+            //    .then(function(token) {
+            //      if (token) {
+            //          debugger;
+            //        console.log("Renewed accessToken; " + token.accessToken);
+            //      }
+            //    })
+            //    .catch(function(err) {
+            //      console.error("Oauth error " + err);
+            //    });
+            //}
+
+            //debugger;
+            //silentGetToken();
+            //silentRenewToken();
+            //silentManageToken();
+            showLoginWidget();
+
+
+</script>
+

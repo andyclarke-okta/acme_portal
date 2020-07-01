@@ -1,0 +1,235 @@
+﻿
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+
+@{
+    ViewData["Title"] = "Authn Login";
+}
+
+<script src="https://global.oktacdn.com/okta-signin-widget/@Configuration["OktaSpa:WidgetVersion"]/js/okta-sign-in.min.js" type="text/javascript"></script>
+<link href="https://global.oktacdn.com/okta-signin-widget/@Configuration["OktaSpa:WidgetVersion"]/css/okta-sign-in.min.css" type="text/css" rel="stylesheet" />
+<h2>Sign In</h2>
+
+<div id="okta-login-container"></div>
+
+
+<form method="POST" asp-action="ImplicitLanding">
+    <input type="hidden" name="accessToken" id="hiddenAccessTokenField" />
+    <input type="hidden" name="idToken" id="hiddenIdTokenField" />
+    @Html.AntiForgeryToken()
+</form>
+
+
+
+<script type="text/javascript">
+
+
+        var myOktaOrg = '@Configuration["OktaWeb:OktaDomain"]';
+        var clientId = '@Configuration["OktaWeb:ClientId"]';
+        var myIssuer = '@Configuration["OktaWeb:Issuer"]';
+        var redirectUri = '@Configuration["OktaWeb:RedirectUri"]';
+        //var redirectUri = "@TempData["redirectUri"]";
+        //var redirectUri = window.location.origin + '/authorization-code/callback';
+        var myHrefLocation = "none";
+
+        var landing = "/Home/UnprotectedLanding"
+
+            // Handle GET / Querystring Params...
+        function getParameterByName(name, url) {
+            // Set default for url
+            if (!url) url = window.location.href;
+            name = name.replace(/[\[\]]/g, "\\$&");
+            var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+                results = regex.exec(url);
+            // If not found
+            if (!results) return null;
+            // If no value found
+            if (!results[2]) return '';
+            // Result found... just decode 1st.
+            console.log('name', results[2]);
+            var parameter_decoded = decodeURIComponent(results[2]);
+            console.log('parameter_decoded', parameter_decoded);
+            return decodeURIComponent(parameter_decoded);
+        }
+
+        (function () {
+            var url = window.location.href;
+            var arr = url.split("/");
+            var result = arr[0] + "//" + arr[2];
+            myHrefLocation = result;
+        })();
+
+
+        // Handle the logic to prioritize the URL for redirect.
+        function getOpt(o1, o2, o3) {
+            // Set defaults for inbound
+            if (o1 != null) return o1;
+            if (o2 != null) return o2;
+            if (o3 != null) return o3;
+            return window.location.href;
+        }
+
+        //  Handle Return URLs
+        //debugger;
+        var relayState = getParameterByName('relaystate');
+        if (relayState != null)
+            console.log('relayState', relayState);
+
+        var fromURI = getParameterByName('fromURI');
+        if (fromURI != null)
+            console.log('fromURI', fromURI);
+
+        var MyInfo = getParameterByName('MyInfo');
+        if (MyInfo != null)
+            console.log('MyInfo', MyInfo);
+
+        function getOpt() {
+            //set hierarchy for choosing landing url
+            var nextUrl = myLocation + landing;
+            //var nextUrl = myOktaOrg;
+            if (MyInfo != null) {
+                nextUrl = MyInfo;
+            }
+            if (relayState != null) {
+                nextUrl = relayState;
+            }
+            if (fromURI != null) {
+                nextUrl = fromURI;
+            }
+            return nextUrl;
+        }
+
+
+
+         var options = {
+            baseUrl: myOktaOrg,
+            logo: "/img/logo_acme.png",
+            features: {
+                router: true,
+                rememberMe: false,
+                smsRecovery: true,
+                multiOptionalFactorEnroll: true
+
+             },
+             authScheme: 'OAUTH2',
+             clientId: clientId,
+             redirectUri: redirectUri,
+             authParams: {
+                issuer: myIssuer,
+                 oAuthTimeout: 30000,
+                //response mode defaults to fragment when pkce=true
+                //response mode defaults to okta_post_message when pkce=false
+                responseMode: 'okta_post_message',
+                //response type defaults to code when pkce
+                responseType: ['id_token', 'token'],
+                 //pkce default value is true
+                pkce: false,
+                scope: [ 'openid', 'email', 'profile','groups'],
+             },
+            i18n: {
+                // Overriding English properties
+                'en': {
+                    'primaryauth.title': 'Sign in to Acme',
+                    'primaryauth.username.placeholder': 'Your Acme Username'
+                }
+             }
+        };
+    var oktaSignIn = new OktaSignIn(options);
+
+
+    debugger;
+
+          function widgetSuccessCallback(res) {
+              var key = '';
+              if (res[0]) {
+                key = Object.keys(res[0])[0];
+                  oktaSignIn.authClient.tokenManager.add(key, res[0]);
+                  console.log("idToken; " + res[0].idToken);
+              }
+              if (res[1]) {
+                key = Object.keys(res[1])[0];
+                  oktaSignIn.authClient.tokenManager.add(key, res[1]);
+                  console.log("accessToken; " + res[1].accessToken);
+
+              }
+              if (res.status === 'SUCCESS') {
+                var token = oktaSignIn.authClient.tokenManager.get(key);
+                console.log("Logged in to Okta and issued token:");
+                  debugger;
+                  var tempId = res[0].idToken;
+                  console.log("send idToken; " + tempId);
+                  var sessionIdTokenField = $("#hiddenIdTokenField");
+                  sessionIdTokenField.val(tempId);
+
+                  var tempAccess = res[1].accessToken;
+                  console.log("send accessToken; " + tempAccess);
+                  var sessionAccessTokenField = $("#hiddenAccessTokenField");
+                  sessionAccessTokenField.val(tempAccess);
+
+                  var form = sessionAccessTokenField.parent();
+                  form.submit();
+              }
+          }
+
+           function widgetErrorCallback(err) {
+               // handleErrors(err);
+               console.log("failed to login: %o", err);
+                  debugger;
+            }
+
+
+            function showLoginWidget() {
+                oktaSignIn.renderEl(
+                    {  el: '#okta-login-container'},
+                    widgetSuccessCallback,
+                    widgetErrorCallback
+                );
+            }
+
+
+
+
+             showLoginWidget();
+
+             //this call /api/v1/sessions/me
+            //oktaSignIn.authClient.session.exists()
+            //.then(function(session) {
+            //    if (session) {
+            //        console.log("session exists; " + session);
+            //        debugger;
+            //    } else
+            //        console.log('A session does not exist.');
+            //        debugger;
+            //        showLoginWidget();
+            //    }
+            //)
+            //.catch(function (err) {
+            //    console.error("Oauth error " + err);
+            //    }
+            //);
+
+            ////this call /api/v1/sessions/me
+            //oktaSignIn.authClient.session.get()
+            //.then(function(session) {
+            //        console.log("session exists; " + session);
+            //        debugger;
+                //get access token
+            //    }
+            //)
+            //.catch(function (err) {
+            //    console.error("user not logged in " + err);
+                //        debugger;
+            //        showLoginWidget();
+            //    }
+            //);
+
+
+
+
+            console.log('Auth: ', myOktaOrg);
+            console.log("REDIRECT location; " + redirectUri);
+            console.log("current location; " + window.location.origin);
+
+
+
+</script>

@@ -1,0 +1,182 @@
+﻿
+@{
+    ViewData["Title"] = "Register";
+}
+
+<link href="https://global.oktacdn.com/okta-signin-widget/3.8.0/css/okta-sign-in.min.css" type="text/css" rel="stylesheet">
+
+<div class="login-bg-image" style="background-image: url('/img/Brooklyn-Bridge-East-River-New-York-City.jpg')"></div>
+<div id="okta-login-container">
+<div data-se="auth-container" id="okta-sign-in" class="auth-container main-container no-beacon">
+    <div class="okta-sign-in-header auth-header">
+        <img src="/img/logo_acme.png" class="auth-org-logo" alt="">
+        <div data-type="beacon-container" class="beacon-container"></div>
+    </div>
+    <div class="auth-content">
+        <div class="auth-content-inner">
+            <div class="registration">
+                <form method="POST" action="/Home/RegisterRoute" data-se="o-form" slot="content" id="form4" class="o-form o-form-edit-mode">
+                    <div data-se="o-form-content" class="o-form-content o-form-theme clearfix">
+                        <h2 data-se="o-form-head" class="okta-form-title o-form-head">Create Account</h2>
+                        <div class="o-form-error-container" data-se="o-form-error-container"></div>
+                        <div class="o-form-fieldset-container" data-se="o-form-fieldset-container">
+                            <div data-se="o-form-fieldset" class="o-form-fieldset o-form-label-top">
+                                <div data-se="o-form-input-container" class="o-form-input"><span data-se="o-form-input-email" class="o-form-input-name-email o-form-control okta-form-input-field input-fix">                  <input type="text" placeholder="Email *" name="email" id="input6" value="" aria-label="Email *" autocomplete="off">            </span></div>
+                            </div>
+                            <div data-se="o-form-fieldset" class="o-form-fieldset o-form-label-top">
+                                <div data-se="o-form-input-container" class="o-form-input"><span data-se="o-form-input-password" class="o-form-input-name-password o-form-control okta-form-input-field input-fix">                    <span class="icon input-icon remote-lock-16"></span>            <input type="password" placeholder="Password *" name="password" id="input8" value="" aria-label="Password *" autocomplete="off">            </span></div>
+                            </div>
+                            <div id="subschemas-password" class="subschema">
+                                <div class="subschema-unsatisfied subschema-0">
+                                    <p class="default-schema">        <span class="icon icon-16"></span>        At least 8 character(s)      </p>
+                                </div>
+                                <div class="subschema-unsatisfied subschema-1">
+                                    <p class="default-schema">        <span class="icon icon-16"></span>        At least 1 number(s)      </p>
+                                </div>
+                                <div class="subschema-unsatisfied subschema-2">
+                                    <p class="default-schema">        <span class="icon icon-16"></span>        At least 1 lowercase letter(s)      </p>
+                                </div>
+                                <div class="subschema-unsatisfied subschema-3">
+                                    <p class="default-schema">        <span class="icon icon-16"></span>        At least 1 uppercase letter(s)      </p>
+                                </div>
+                            </div>
+                            <div data-se="o-form-fieldset" class="o-form-fieldset o-form-label-top">
+                                <div data-se="o-form-input-container" class="o-form-input"><span data-se="o-form-input-firstName" class="o-form-input-name-firstName o-form-control okta-form-input-field input-fix">                  <input type="text" placeholder="First name *" name="firstName" id="input10" value="" aria-label="First name *" autocomplete="off">            </span></div>
+                            </div>
+                            <div data-se="o-form-fieldset" class="o-form-fieldset o-form-label-top">
+                                <div data-se="o-form-input-container" class="o-form-input"><span data-se="o-form-input-lastName" class="o-form-input-name-lastName o-form-control okta-form-input-field input-fix">                  <input type="text" placeholder="Last name *" name="lastName" id="input12" value="" aria-label="Last name *" autocomplete="off">            </span></div>
+                            </div>
+                            <div data-se="o-form-fieldset" class="o-form-fieldset">
+                                <div data-se="o-form-label" class="okta-form-label o-form-label"><label for="input14">Opt out of geolocation tracking on mobile?&nbsp;</label></div>
+                                <div data-se="o-form-input-container" class="o-form-input">
+                                    <span data-se="o-form-input-hasOptedOutGeoTracking" class="o-form-select o-form-input-name-hasOptedOutGeoTracking o-form-control">
+                                        <select id="input14" name="hasOptedOutGeoTracking" class="chzn-done" style="display: none;">
+                                            <option value="false">no</option>
+                                            <option value="true">yes</option>
+                                        </select>
+                                        <div id="input14_chzn" class="chzn-container chzn-container-single chzn-container-single-nosearch" style="width: 62%;" title="">
+                                            <a href="javascript:void(0)" class="chzn-single" tabindex="-1">
+                                                <span>no</span>
+                                                <div><b></b></div>
+                                            </a>
+                                            <div class="chzn-drop">
+                                                <div class="chzn-search"><input type="text" autocomplete="off" readonly=""></div>
+                                                <ul class="chzn-results" style="display: none;">
+                                                    <li id="input14_chzn_o_0" class="active-result result-selected" style="">no</li>
+                                                    <li id="input14_chzn_o_1" class="active-result" style="">yes</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </span>
+                                </div>
+                            </div>
+                            <div data-se="o-form-fieldset" class="o-form-fieldset">
+                                <div data-se="o-form-label" class="okta-form-label o-form-label"><label for="input16">Opt out of profiling?&nbsp;</label></div>
+                                <div data-se="o-form-input-container" class="o-form-input">
+                                    <span data-se="o-form-input-hasOptedOutProfiling" class="o-form-select o-form-input-name-hasOptedOutProfiling o-form-control">
+                                        <select id="input16" name="hasOptedOutProfiling" class="chzn-done" style="display: none;">
+                                            <option value="false">no</option>
+                                            <option value="true">yes</option>
+                                        </select>
+                                        <div id="input16_chzn" class="chzn-container chzn-container-single chzn-container-single-nosearch" style="width: 62%;" title="">
+                                            <a href="javascript:void(0)" class="chzn-single" tabindex="-1">
+                                                <span>no</span>
+                                                <div><b></b></div>
+                                            </a>
+                                            <div class="chzn-drop">
+                                                <div class="chzn-search"><input type="text" autocomplete="off" readonly=""></div>
+                                                <ul class="chzn-results" style="display: none;">
+                                                    <li id="input16_chzn_o_0" class="active-result result-selected" style="">no</li>
+                                                    <li id="input16_chzn_o_1" class="active-result" style="">yes</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </span>
+                                </div>
+                            </div>
+                            <div data-se="o-form-fieldset" class="o-form-fieldset">
+                                <div data-se="o-form-label" class="okta-form-label o-form-label"><label for="input18">Opt out of web activity and email tracking?&nbsp;</label></div>
+                                <div data-se="o-form-input-container" class="o-form-input">
+                                    <span data-se="o-form-input-hasOptedOutTracking" class="o-form-select o-form-input-name-hasOptedOutTracking o-form-control">
+                                        <select id="input18" name="hasOptedOutTracking" class="chzn-done" style="display: none;">
+                                            <option value="false">no</option>
+                                            <option value="true">yes</option>
+                                        </select>
+                                        <div id="input18_chzn" class="chzn-container chzn-container-single chzn-container-single-nosearch" style="width: 62%;" title="">
+                                            <a href="javascript:void(0)" class="chzn-single" tabindex="-1">
+                                                <span>no</span>
+                                                <div><b></b></div>
+                                            </a>
+                                            <div class="chzn-drop">
+                                                <div class="chzn-search"><input type="text" autocomplete="off" readonly=""></div>
+                                                <ul class="chzn-results" style="display: none;">
+                                                    <li id="input18_chzn_o_0" class="active-result result-selected" style="">no</li>
+                                                    <li id="input18_chzn_o_1" class="active-result" style="">yes</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </span>
+                                </div>
+                            </div>
+                            <div data-se="o-form-fieldset" class="o-form-fieldset">
+                                <div data-se="o-form-label" class="okta-form-label o-form-label"><label for="input20">Opt out of processing personal data?&nbsp;</label></div>
+                                <div data-se="o-form-input-container" class="o-form-input">
+                                    <span data-se="o-form-input-hasOptedOutProcessing" class="o-form-select o-form-input-name-hasOptedOutProcessing o-form-control">
+                                        <select id="input20" name="hasOptedOutProcessing" class="chzn-done" style="display: none;">
+                                            <option value="false">no</option>
+                                            <option value="true">yes</option>
+                                        </select>
+                                        <div id="input20_chzn" class="chzn-container chzn-container-single chzn-container-single-nosearch" style="width: 62%;" title="">
+                                            <a href="javascript:void(0)" class="chzn-single" tabindex="-1">
+                                                <span>no</span>
+                                                <div><b></b></div>
+                                            </a>
+                                            <div class="chzn-drop">
+                                                <div class="chzn-search"><input type="text" autocomplete="off" readonly=""></div>
+                                                <ul class="chzn-results" style="display: none;">
+                                                    <li id="input20_chzn_o_0" class="active-result result-selected" style="">no</li>
+                                                    <li id="input20_chzn_o_1" class="active-result" style="">yes</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </span>
+                                </div>
+                            </div>
+                            <div data-se="o-form-fieldset" class="o-form-fieldset">
+                                <div data-se="o-form-label" class="okta-form-label o-form-label"><label for="input22">Opt out of product and service solicitation?&nbsp;</label></div>
+                                <div data-se="o-form-input-container" class="o-form-input">
+                                    <span data-se="o-form-input-hasOptedOutSolicit" class="o-form-select o-form-input-name-hasOptedOutSolicit o-form-control">
+                                        <select id="input22" name="hasOptedOutSolicit" class="chzn-done" style="display: none;">
+                                            <option value="false">no</option>
+                                            <option value="true">yes</option>
+                                        </select>
+                                        <div id="input22_chzn" class="chzn-container chzn-container-single chzn-container-single-nosearch" style="width: 62%;" title="">
+                                            <a href="javascript:void(0)" class="chzn-single" tabindex="-1">
+                                                <span>no</span>
+                                                <div><b></b></div>
+                                            </a>
+                                            <div class="chzn-drop">
+                                                <div class="chzn-search"><input type="text" autocomplete="off" readonly=""></div>
+                                                <ul class="chzn-results" style="display: none;">
+                                                    <li id="input22_chzn_o_0" class="active-result result-selected" style="">no</li>
+                                                    <li id="input22_chzn_o_1" class="active-result" style="">yes</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </span>
+                                </div>
+                            </div>
+                            <div data-se="o-form-fieldset" class="o-form-fieldset o-form-label-top">
+                                <div data-se="o-form-input-container" class="o-form-input"><span data-se="o-form-input-customId" class="o-form-input-name-customId o-form-control okta-form-input-field input-fix">                  <input type="text" placeholder="Your Account Id *" name="customId" id="input24" value="" aria-label="Your Account Id *" autocomplete="off">            </span></div>
+                            </div>
+                            <span class="required-fields-label">* indicates required field</span>
+                        </div>
+                    </div>
+                    <div class="o-form-button-bar"><input class="button button-primary" type="submit" value="Register" data-type="save"></div>
+                </form>
+                <div class="auth-footer">      <a href="#" class="link help" data-se="back-link">        Back to Sign In      </a>    </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>

@@ -1,0 +1,51 @@
+﻿@model okta_aspnetcore_mvc_example.Models.EmailViewModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Application Access Request</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+</head>
+<body>
+    <div>&nbsp;</div>
+    <div class="panel panel-success col-md-8">
+        <div>&nbsp;</div>
+        <div class="panel panel-heading">
+            <div class="panel-title">
+                User Links Attached to approve or reject Application Request.
+            </div>
+        </div>
+        <div class="panel panel-body">
+            <div>
+                <p>Hi </p>
+                <p>
+                    An Access Request for "Customer Demo Application" has been submitted by @Model.Name
+                </p>
+            </div>
+            <div>
+                    <p>
+                        To Approve application request, please hit
+                        <a href="@Model.BasePath/Home/RequestReply?token=@Model.AcceptToken&locator=@Model.OktaId">
+                            @Model.BasePath/Home/RequestReply?token=@Model.AcceptToken&locator=@Model.OktaId
+                        </a>
+                    </p>
+                    <p>
+                        To Reject application request, please hit
+                        <a href="@Model.BasePath/Home/RequestReply?token=@Model.RejectToken&locator=@Model.OktaId">
+                            @Model.BasePath/Home/RequestReply?token=@Model.RejectToken&locator=@Model.OktaId
+                        </a>
+                    </p>
+                    <p>This link expires in 72 hours."</p>
+                </div>
+            <div>&nbsp;</div>
+            <div>
+                Thank you!
+            </div>
+        </div>
+    </div>
+</body>
+</html>

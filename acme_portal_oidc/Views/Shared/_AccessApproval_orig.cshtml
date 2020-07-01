@@ -1,0 +1,51 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Application Access Request</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+</head>
+<body>
+    <div>&nbsp;</div>
+    <div class="panel panel-success col-md-8">
+        <div>&nbsp;</div>
+        <div class="panel panel-heading">
+            <div class="panel-title">
+                User Links Attached to approve or reject Application Request.
+            </div>
+        </div>
+        <div class="panel panel-body">
+            <div>
+                <p>Hi </p>
+                <p>
+                    @*An Access Request for "Jefferies Application" has been submitted by @TempData["Name"]*@
+                </p>
+            </div>
+            @*<div>
+                <p>
+                    To Approve application request, please hit
+                    <a href="@Request.Url.GetLeftPart(UriPartial.Authority)/Home/RequestReply?token=@TempData["acceptToken"]&locator=@TempData["oktaId"]">
+                        @Request.Url.GetLeftPart(UriPartial.Authority)/Home/RequestReply?token=@TempData["acceptToken"]&locator=@TempData["oktaId"]
+                    </a>
+                </p>
+                <p>
+                    To Reject application request, please hit
+                    <a href="@Request.Url.GetLeftPart(UriPartial.Authority)/Home/RequestReply?token=@TempData["rejectToken"]&locator=@TempData["oktaId"]">
+                        @Request.Url.GetLeftPart(UriPartial.Authority)/Home/RequestReply?token=@TempData["rejectToken"]&locator=@TempData["oktaId"]
+                    </a>
+                </p>
+                <p>This link expires in 72 hours."</p>
+            </div>*@
+            <div>&nbsp;</div>
+            <div>
+                Thank you!
+            </div>
+        </div>
+    </div>
+</body>
+</html>

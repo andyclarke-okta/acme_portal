@@ -1,0 +1,40 @@
+﻿
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Application Access Rejected</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+</head>
+<body>
+    <div>&nbsp;</div>
+    <div class="panel panel-success col-md-8">
+        <div>&nbsp;</div>
+        <div class="panel panel-heading">
+            <div class="panel-title">
+                Your Application Request has been Rejected.
+            </div>
+        </div>
+        <div class="panel panel-body">
+            <div>
+                <p>Hi </p>
+                <p>
+                    Hello, @TempData["Name"]
+                </p>
+            </div>
+            <div>
+                <p> The Business Owner has rejected your application request. </p>
+                <p> If you feel this is in error, please reach out to your manager</p>
+            </div>
+            <div>&nbsp;</div>
+            <div>
+                Thank you!
+            </div>
+        </div>
+    </div>
+</body>
+</html>

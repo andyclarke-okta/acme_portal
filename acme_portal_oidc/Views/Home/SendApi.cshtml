@@ -1,0 +1,33 @@
+﻿
+@using okta_aspnetcore_mvc_example.Models
+
+
+
+@{
+    var data = (ApiResponseModel)ViewData["apiRsp"];
+}
+
+
+
+
+
+    <h2>API Response data</h2>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>   Text       </th>
+                <th>   Date      </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in data.messages)
+            {
+                <tr>
+                    <td>@item.text </td>
+                    <td>@item.date</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
