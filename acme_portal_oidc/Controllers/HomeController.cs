@@ -166,8 +166,8 @@ namespace okta_aspnetcore_mvc_example.Controllers
                 authProperties);
 
 
-
-            return View();
+            return RedirectToAction("Index", "Home");
+            //return View();
         }
 
 
